@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  database:
+    image: postgres
+    container_name: pg_container
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=urls
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    image: url
+    container_name: crow_container
+    links:
+      - database
+    environment:
+      - DATABASE_URL=postgres://postgres:password@database:5432/urls
+      - PORT=8080
+    depends_on:
+      - database
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata: {}
